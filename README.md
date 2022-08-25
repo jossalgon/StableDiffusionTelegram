@@ -18,3 +18,8 @@ StableDiffusionTelegram is a telegram bot that allows to generate images using t
   ```
   python bot.py
   ```
+
+## Examples
+Generating image from text |  Generating a variation   |  Generating a new image from an user photo
+:-------------------------:|:-------------------------:|:-------------------------:
+![](assets/example1.jpg)   |  ![](assets/example2.jpg) |  ![](assets/example3.jpg)
