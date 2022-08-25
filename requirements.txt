@@ -4,3 +4,4 @@ scipy>=1.7.3
 ftfy>=6.1.1
 python-telegram-bot>=20.0a2
 python-dotenv>=0.20.0
+huggingface_hub
