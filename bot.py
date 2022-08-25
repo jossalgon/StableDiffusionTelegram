@@ -56,24 +56,26 @@ def generate_image(prompt, seed=None, height=HEIGHT, width=WIDTH, num_inference_
     if photo is not None:
         pipe.to("cpu")
         img2imgPipe.to("cuda")
-        selected_pipe = img2imgPipe
         init_image = Image.open(BytesIO(photo)).convert("RGB")
         init_image = init_image.resize((height, width))
         init_image = preprocess(init_image)
+        with autocast("cuda"):
+            image = img2imgPipe(prompt=[prompt], init_image=init_image,
+                                    generator=generator,
+                                    strength=strength,
+                                    guidance_scale=guidance_scale,
+                                    num_inference_steps=num_inference_steps)["sample"][0]
     else:
         pipe.to("cuda")
         img2imgPipe.to("cpu")
-        selected_pipe = pipe
-        init_image = None
-
-    with autocast("cuda"):
-        image = selected_pipe(prompt=[prompt], init_image=init_image,
-                                generator=generator,
-                                strength=strength,
-                                height=height,
-                                width=width,
-                                guidance_scale=guidance_scale,
-                                num_inference_steps=num_inference_steps)["sample"][0]
+        with autocast("cuda"):
+            image = pipe(prompt=[prompt],
+                                    generator=generator,
+                                    strength=strength,
+                                    height=height,
+                                    width=width,
+                                    guidance_scale=guidance_scale,
+                                    num_inference_steps=num_inference_steps)["sample"][0]
     return image, seed
 
 
