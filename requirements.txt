@@ -1,0 +1,6 @@
+diffusers>=0.2.4
+transformers>=4.21.1
+scipy>=1.7.3
+ftfy>=6.1.1
+python-telegram-bot>=20.0a2
+python-dotenv>=0.20.0
