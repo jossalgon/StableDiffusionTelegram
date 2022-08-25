@@ -8,13 +8,18 @@ StableDiffusionTelegram is a telegram bot that allows to generate images using t
   ```
   pip install -r requirements.txt
   ```
-3. Talk to BotFather and create a bot (https://t.me/BotFather).
-4. Create a .env file with the telegram token and the safe content option (if false, explicit content will be displayed, otherwise set to true):
+3. Register in Hugging Face Hub and create a token (https://huggingface.co/docs/hub/security-tokens).
+4. Use the token to login in huggingface-cli:
+  ```
+  $ huggingface-cli login
+  ```
+5. Talk to BotFather and create a bot (https://t.me/BotFather).
+6. Create a .env file with the telegram token and the safe content option (if false, explicit content will be displayed, otherwise set to true):
   ```
   TG_TOKEN="YOUR_TOKEN_IS_HERE"
   SAFETY_CHECKER="false"
   ```
-5. Run the bot
+7. Run the bot
   ```
   python bot.py
   ```
