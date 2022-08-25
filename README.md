@@ -19,10 +19,12 @@ StableDiffusionTelegram is a telegram bot that allows to generate images using t
   
 5. Talk to BotFather and create a bot (https://t.me/BotFather).
 
-6. Create a .env file with the telegram token and the safe content option (if false, explicit content will be displayed, otherwise set to true):
+6. Create a .env file with the telegram token and the safe content option (if false, explicit content will be displayed, otherwise set to true). If you have memory problems, you can lower the width and height to lower numbers, such as 448 or 320. An example of .env is the following:
   ```
   TG_TOKEN="YOUR_TOKEN_IS_HERE"
   SAFETY_CHECKER="false"
+  HEIGHT="512"
+  WIDTH="512"
   ```
   
 7. Run the bot

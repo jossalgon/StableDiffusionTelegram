@@ -14,6 +14,12 @@ import random
 load_dotenv()
 TG_TOKEN = os.getenv("TG_TOKEN")
 SAFETY_CHECKER = (os.getenv('SAFETY_CHECKER', 'true').lower() == 'true')
+HEIGHT = int(os.getenv('HEIGHT', '512'))
+WIDTH = int(os.getenv('WIDTH', '512'))
+NUM_INFERENCE_STEPS = int(os.getenv('NUM_INFERENCE_STEPS', '100'))
+STRENTH = float(os.getenv('STRENTH', '0.75'))
+GUIDANCE_SCALE = float(os.getenv('GUIDANCE_SCALE', '7.5'))
+
 
 # load the text2img pipeline
 pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", revision="fp16", torch_dtype=torch.float16, use_auth_token=True)
@@ -43,7 +49,7 @@ def get_try_again_markup():
     return reply_markup
 
 
-def generate_image(prompt, seed=None, height=512, width=512, num_inference_steps=100, strength=0.75, guidance_scale=7.5, photo=None):
+def generate_image(prompt, seed=None, height=HEIGHT, width=WIDTH, num_inference_steps=NUM_INFERENCE_STEPS, strength=STRENTH, guidance_scale=GUIDANCE_SCALE, photo=None):
     seed = seed if seed is not None else random.randint(1, 10000)
     generator = torch.cuda.manual_seed_all(seed)
 
@@ -52,7 +58,7 @@ def generate_image(prompt, seed=None, height=512, width=512, num_inference_steps
         img2imgPipe.to("cuda")
         selected_pipe = img2imgPipe
         init_image = Image.open(BytesIO(photo)).convert("RGB")
-        init_image = init_image.resize((512, 512))
+        init_image = init_image.resize((height, width))
         init_image = preprocess(init_image)
     else:
         pipe.to("cuda")
@@ -64,6 +70,8 @@ def generate_image(prompt, seed=None, height=512, width=512, num_inference_steps
         image = selected_pipe(prompt=[prompt], init_image=init_image,
                                 generator=generator,
                                 strength=strength,
+                                height=height,
+                                width=width,
                                 guidance_scale=guidance_scale,
                                 num_inference_steps=num_inference_steps)["sample"][0]
     return image, seed
