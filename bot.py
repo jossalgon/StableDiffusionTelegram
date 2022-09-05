@@ -12,7 +12,10 @@ from io import BytesIO
 import random
 
 load_dotenv()
-TG_TOKEN = os.getenv("TG_TOKEN")
+TG_TOKEN = os.getenv('TG_TOKEN')
+MODEL_DATA = os.getenv('MODEL_DATA', 'CompVis/stable-diffusion-v1-4')
+LOW_VRAM_MODE = (os.getenv('LOW_VRAM', 'true').lower() == 'true')
+USE_AUTH_TOKEN = (os.getenv('USE_AUTH_TOKEN', 'true').lower() == 'true')
 SAFETY_CHECKER = (os.getenv('SAFETY_CHECKER', 'true').lower() == 'true')
 HEIGHT = int(os.getenv('HEIGHT', '512'))
 WIDTH = int(os.getenv('WIDTH', '512'))
@@ -20,13 +23,15 @@ NUM_INFERENCE_STEPS = int(os.getenv('NUM_INFERENCE_STEPS', '100'))
 STRENTH = float(os.getenv('STRENTH', '0.75'))
 GUIDANCE_SCALE = float(os.getenv('GUIDANCE_SCALE', '7.5'))
 
+revision = "fp16" if LOW_VRAM_MODE else None
+torch_dtype = torch.float16 if LOW_VRAM_MODE else None
 
 # load the text2img pipeline
-pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", revision="fp16", torch_dtype=torch.float16, use_auth_token=True)
+pipe = StableDiffusionPipeline.from_pretrained(MODEL_DATA, revision=revision, torch_dtype=torch_dtype, use_auth_token=USE_AUTH_TOKEN)
 pipe = pipe.to("cpu")
 
 # load the img2img pipeline
-img2imgPipe = StableDiffusionImg2ImgPipeline.from_pretrained("CompVis/stable-diffusion-v1-4",revision="fp16", torch_dtype=torch.float16, use_auth_token=True)
+img2imgPipe = StableDiffusionImg2ImgPipeline.from_pretrained(MODEL_DATA, revision=revision, torch_dtype=torch_dtype, use_auth_token=USE_AUTH_TOKEN)
 img2imgPipe = img2imgPipe.to("cpu")
 
 # disable safety checker if wanted
