@@ -1,7 +1,6 @@
 import torch
 from torch import autocast
-from diffusers import StableDiffusionPipeline
-from image_to_image import StableDiffusionImg2ImgPipeline, preprocess
+from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline
 from PIL import Image
 
 import os
@@ -63,13 +62,12 @@ def generate_image(prompt, seed=None, height=HEIGHT, width=WIDTH, num_inference_
         img2imgPipe.to("cuda")
         init_image = Image.open(BytesIO(photo)).convert("RGB")
         init_image = init_image.resize((height, width))
-        init_image = preprocess(init_image)
         with autocast("cuda"):
             image = img2imgPipe(prompt=[prompt], init_image=init_image,
                                     generator=generator,
                                     strength=strength,
                                     guidance_scale=guidance_scale,
-                                    num_inference_steps=num_inference_steps)["sample"][0]
+                                    num_inference_steps=num_inference_steps)["images"][0]
     else:
         pipe.to("cuda")
         img2imgPipe.to("cpu")
@@ -80,7 +78,7 @@ def generate_image(prompt, seed=None, height=HEIGHT, width=WIDTH, num_inference_
                                     height=height,
                                     width=width,
                                     guidance_scale=guidance_scale,
-                                    num_inference_steps=num_inference_steps)["sample"][0]
+                                    num_inference_steps=num_inference_steps)["images"][0]
     return image, seed
 
 
